@@ -13,135 +13,75 @@ namespace Game2048
             this.KeyDown += new KeyEventHandler(Form_KeyDown);
         }
 
+        private bool Move1(int from1, int to1, int from2, int to2, bool isVertical)
+        {
+            bool isMove = false;
+            Stack<int> stack = new Stack<int>();
+
+            for (
+                int j = from1;
+                (from1 < to1) ? j < to1 : j >= to1;
+                j = from1 < to1 ? j + 1 : j - 1)
+            {
+                for (
+                    int i = from2, lastValue = -1;
+                    (from2 < to2) ? i < to2 : i >= to2;
+                    i = from2 < to2 ? i + 1 : i - 1)
+                {
+                    int irow = isVertical ? i : j;
+                    int icolumn = isVertical ? j : i;
+
+                    if (_Field[irow, icolumn] != 0)
+                    {
+                        bool isSameValues = !(stack.Count == 0) &&
+                            stack.Peek() == _Field[irow, icolumn] &&
+                            lastValue == _Field[irow, icolumn];
+                        lastValue = !isSameValues ? _Field[irow, icolumn] : -1;
+                        stack.Push(isSameValues ? GetNextValue(stack.Pop()) : _Field[irow, icolumn]);
+                    }
+                }
+
+                // Переворот стека
+                stack = new Stack<int>(stack);
+
+                for (
+                    int i = from2;
+                    (from2 < to2) ? i < to2 : i >= to2;
+                    i = (from2 < to2) ? i + 1 : i - 1)
+                {
+                    int irow = isVertical ? i : j;
+                    int icolumn = isVertical ? j : i;
+
+                    if (stack.Count != 0 && stack.Peek() != _Field[irow, icolumn])
+                    {
+                        isMove = true;
+                    }
+
+                    _Field[irow, icolumn] = (stack.Count != 0) ? stack.Pop() : 0;
+                }
+            }
+
+            return isMove;
+        }
+
         private void ChangeStateByDirection(EDirection direction)
         {
             bool isMove = false;
+            Stack<int> stack = new Stack<int>();
+
             switch (direction)
             {
                 case EDirection.UP:
-                    for (int j = 0; j < _Field.GetLength(1); j++)
-                    {
-                        Stack<int> stack = new Stack<int>();
-
-                        for (int i = 0, lastValue = -1; i < _Field.GetLength(0); i++)
-                        {
-                            if (_Field[i, j] != 0)
-                            {
-                                bool isSameValues = !(stack.Count == 0) &&
-                                    stack.Peek() == _Field[i, j] &&
-                                    lastValue == _Field[i, j];
-                                lastValue = !isSameValues ? _Field[i, j] : -1;
-                                stack.Push(isSameValues ? GetNextValue(stack.Pop()) : _Field[i, j]);
-                            }
-                        }
-
-                        // Переворот стека
-                        stack = new Stack<int>(stack);
-
-                        for (int i = 0; i < _Field.GetLength(0); i++)
-                        {
-                            if (stack.Count != 0 && stack.Peek() != _Field[i, j])
-                            {
-                                isMove = true;
-                            }
-
-                            _Field[i, j] = (stack.Count != 0) ? stack.Pop() : 0;
-
-                        }
-                    }
+                    isMove = Move1(0, _Field.GetLength(1), 0, _Field.GetLength(0), true);
                     break;
                 case EDirection.RIGHT:
-                    for (int i = 0; i < _Field.GetLength(0); i++)
-                    {
-                        Stack<int> stack = new Stack<int>();
-
-                        for (int j = _Field.GetUpperBound(1), lastValue = -1; j >= 0; j--)
-                        {
-                            if (_Field[i, j] != 0)
-                            {
-                                bool isSameValues = !(stack.Count == 0) &&
-                                    stack.Peek() == _Field[i, j] &&
-                                    lastValue == _Field[i, j];
-                                lastValue = !isSameValues ? _Field[i, j] : -1;
-                                stack.Push(isSameValues ? GetNextValue(stack.Pop()) : _Field[i, j]);
-                            }
-                        }
-
-                        // Переворот стека
-                        stack = new Stack<int>(stack);
-
-                        for (int j = _Field.GetUpperBound(1); j >= 0; j--)
-                        {
-                            if (stack.Count != 0 && stack.Peek() != _Field[i, j])
-                            {
-                                isMove = true;
-                            }
-
-                            _Field[i, j] = (stack.Count != 0) ? stack.Pop() : 0;
-                        }
-                    }
+                    isMove = Move1(0, _Field.GetLength(0), _Field.GetUpperBound(1), 0, false);
                     break;
                 case EDirection.DOWN:
-                    for (int j = 0; j < _Field.GetLength(1); j++)
-                    {
-                        Stack<int> stack = new Stack<int>();
-
-                        for (int i = _Field.GetUpperBound(0), lastValue = -1; i >= 0; i--)
-                        {
-                            if (_Field[i, j] != 0)
-                            {
-                                bool isSameValues = !(stack.Count == 0) &&
-                                    stack.Peek() == _Field[i, j] &&
-                                    lastValue == _Field[i, j];
-                                lastValue = !isSameValues ? _Field[i, j] : -1;
-                                stack.Push(isSameValues ? GetNextValue(stack.Pop()) : _Field[i, j]);
-                            }
-                        }
-
-                        // Переворот стека
-                        stack = new Stack<int>(stack);
-
-                        for (int i = _Field.GetUpperBound(0); i >= 0; i--)
-                        {
-                            if (stack.Count != 0 && stack.Peek() != _Field[i, j])
-                            {
-                                isMove = true;
-                            }
-
-                            _Field[i, j] = (stack.Count != 0) ? stack.Pop() : 0;
-                        }
-                    }
+                    isMove = Move1(0, _Field.GetLength(1), _Field.GetUpperBound(0), 0, true);
                     break;
                 case EDirection.LEFT:
-                    for (int i = 0; i < _Field.GetLength(0); i++)
-                    {
-                        Stack<int> stack = new Stack<int>();
-
-                        for (int j = 0, lastValue = -1; j < _Field.GetLength(1); j++)
-                        {
-                            if (_Field[i, j] != 0)
-                            {
-                                bool isSameValues = !(stack.Count == 0) &&
-                                    stack.Peek() == _Field[i, j] &&
-                                    lastValue == _Field[i, j];
-                                lastValue = !isSameValues ? _Field[i, j] : -1;
-                                stack.Push(isSameValues ? GetNextValue(stack.Pop()) : _Field[i, j]);
-                            }
-                        }
-
-                        // Переворот стека
-                        stack = new Stack<int>(stack);
-
-                        for (int j = 0; j < _Field.GetLength(1); j++)
-                        {
-                            if (stack.Count != 0 && stack.Peek() != _Field[i, j])
-                            {
-                                isMove = true;
-                            }
-
-                            _Field[i, j] = (stack.Count != 0) ? stack.Pop() : 0;
-                        }
-                    }
+                    isMove = Move1(0, _Field.GetLength(0), 0, _Field.GetLength(1), false);
                     break;
             }
 
@@ -296,7 +236,6 @@ namespace Game2048
             {
                 case Keys.Up:
                     ChangeStateByDirection(EDirection.UP);
-                    //AddRandomItem();
                     break;
                 case Keys.Right:
                     ChangeStateByDirection(EDirection.RIGHT);
