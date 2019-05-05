@@ -13,7 +13,7 @@ namespace Game2048
             this.KeyDown += new KeyEventHandler(Form_KeyDown);
         }
 
-        private bool Move1(int from1, int to1, int from2, int to2, bool isVertical)
+        private bool MoveValues(int from1, int to1, int from2, int to2, bool isVertical)
         {
             bool isMove = false;
             Stack<int> stack = new Stack<int>();
@@ -67,21 +67,20 @@ namespace Game2048
         private void ChangeStateByDirection(EDirection direction)
         {
             bool isMove = false;
-            Stack<int> stack = new Stack<int>();
 
             switch (direction)
             {
                 case EDirection.UP:
-                    isMove = Move1(0, _Field.GetLength(1), 0, _Field.GetLength(0), true);
+                    isMove = MoveValues(0, _Field.GetLength(1), 0, _Field.GetLength(0), true);
                     break;
                 case EDirection.RIGHT:
-                    isMove = Move1(0, _Field.GetLength(0), _Field.GetUpperBound(1), 0, false);
+                    isMove = MoveValues(0, _Field.GetLength(0), _Field.GetUpperBound(1), 0, false);
                     break;
                 case EDirection.DOWN:
-                    isMove = Move1(0, _Field.GetLength(1), _Field.GetUpperBound(0), 0, true);
+                    isMove = MoveValues(0, _Field.GetLength(1), _Field.GetUpperBound(0), 0, true);
                     break;
                 case EDirection.LEFT:
-                    isMove = Move1(0, _Field.GetLength(0), 0, _Field.GetLength(1), false);
+                    isMove = MoveValues(0, _Field.GetLength(0), 0, _Field.GetLength(1), false);
                     break;
             }
 
