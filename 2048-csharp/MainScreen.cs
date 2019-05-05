@@ -15,6 +15,7 @@ namespace Game2048
 
         private void ChangeStateByDirection(EDirection direction)
         {
+            bool isMove = false;
             switch (direction)
             {
                 case EDirection.UP:
@@ -39,11 +40,26 @@ namespace Game2048
 
                         for (int i = 0; i < _Field.GetLength(1); i++)
                         {
-                            _Field[i, j] = (stack.Count != 0) ? stack.Pop() : 0;
+                            if (stack.Count != 0)
+                            {
+                                if (stack.Peek() != _Field[i, j])
+                                {
+                                    isMove = true;
+                                }
+                                _Field[i, j] = stack.Pop();
+                            }
+                            else
+                            {
+                                _Field[i, j] = 0;
+                            }
+
                         }
                     }
 
-                    AddRandomItem();
+                    if (isMove)
+                    {
+                        AddRandomItem();
+                    }
                     UpdateState();
 
                     break;
