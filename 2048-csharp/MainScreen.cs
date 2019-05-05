@@ -40,18 +40,12 @@ namespace Game2048
 
                         for (int i = 0; i < _Field.GetLength(1); i++)
                         {
-                            if (stack.Count != 0)
+                            if (stack.Count != 0 && stack.Peek() != _Field[i, j])
                             {
-                                if (stack.Peek() != _Field[i, j])
-                                {
-                                    isMove = true;
-                                }
-                                _Field[i, j] = stack.Pop();
+                                isMove = true;
                             }
-                            else
-                            {
-                                _Field[i, j] = 0;
-                            }
+
+                            _Field[i, j] = (stack.Count != 0) ? stack.Pop() : 0;
 
                         }
                     }
