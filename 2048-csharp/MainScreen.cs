@@ -40,13 +40,24 @@ namespace Game2048
                     int irow = isVertical ? i : j;
                     int icolumn = isVertical ? j : i;
 
-                    if (_Field[irow, icolumn] != 0)
+                    int value = _Field[irow, icolumn];
+
+                    if (value != 0)
                     {
-                        bool isSameValues = !(stack.Count == 0) &&
-                            stack.Peek() == _Field[irow, icolumn] &&
-                            lastValue == _Field[irow, icolumn];
-                        lastValue = !isSameValues ? _Field[irow, icolumn] : -1;
-                        stack.Push(isSameValues ? GetNextValue(stack.Pop()) : _Field[irow, icolumn]);
+                        bool isSameValues = stack.Count != 0 && stack.Peek() == value && lastValue == value;
+
+                        if (isSameValues)
+                        {
+                            int next = GetNextValue(stack.Pop());
+                            _Score += next;
+                            stack.Push(next);
+                        }
+                        else
+                        {
+                            stack.Push(value);
+                            lastValue = value;
+                        }
+
                     }
                 }
 
@@ -117,6 +128,8 @@ namespace Game2048
                     _Cells[i, j].ForeColor = _CellBackColors[_Field[i, j]].Foreground;
                 }
             }
+
+            _ScoreLabel.Text = String.Format("{0}", _Score);
         }
 
         /// <summary>
