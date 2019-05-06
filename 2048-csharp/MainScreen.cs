@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.IO;
+using System.IO.IsolatedStorage;
 
 namespace Game2048
 {
@@ -206,6 +208,23 @@ namespace Game2048
         /// <param name="e">Класс события.</param>
         private void MainScreen_Load(object sender, EventArgs e)
         {
+            IsolatedStorageFile isf = IsolatedStorageFile.GetStore(
+                IsolatedStorageScope.User | IsolatedStorageScope.Domain | IsolatedStorageScope.Assembly,
+                null,
+                null
+            );
+            StreamReader sr = null;
+            try
+            {
+                sr = new StreamReader(new IsolatedStorageFileStream("Data\\bestScore.txt", FileMode.Open, isf));
+                _BestScore = Convert.ToInt32(sr.ReadLine());
+                sr.Close();
+            }
+            catch
+            {
+                _BestScore = 0;
+            }
+
             int fieldSize = _CELL_SIZE * _FIELD_SIZE + _CELL_MARGIN * (_FIELD_SIZE + 1);
 
             int scorePanelHeight = 70;
@@ -378,6 +397,20 @@ namespace Game2048
             if (_Score > _BestScore)
             {
                 _BestScore = _Score;
+
+                IsolatedStorageFile isf = IsolatedStorageFile.GetStore(
+                    IsolatedStorageScope.User | IsolatedStorageScope.Domain | IsolatedStorageScope.Assembly,
+                    null,
+                    null
+                );
+                isf.CreateDirectory("Data");
+                StreamWriter sw = new StreamWriter(new IsolatedStorageFileStream(
+                    "Data\\bestScore.txt",
+                    FileMode.Create,
+                    isf
+                ));
+                sw.WriteLine(_BestScore);
+                sw.Close();
             }
 
             if (isMove)
