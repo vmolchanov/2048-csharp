@@ -185,8 +185,12 @@ namespace Game2048
         private void MainScreen_Load(object sender, EventArgs e)
         {
             int fieldSize = _CELL_SIZE * _FIELD_SIZE + _CELL_MARGIN * (_FIELD_SIZE + 1);
+
+            int scorePanelHeight = 70;
+            int scorePanelWidth = _CELL_SIZE - 5;
+
             int width = fieldSize + _PADDING * 2;
-            int height = fieldSize + _PADDING * 3 + _CELL_SIZE;
+            int height = fieldSize + _PADDING * 3 + scorePanelHeight;
             int x = Screen.PrimaryScreen.Bounds.Width / 2 - width / 2;
             int y = Screen.PrimaryScreen.Bounds.Height / 2 - height / 2;
 
@@ -201,25 +205,53 @@ namespace Game2048
             // Инициализация счета
             Panel scorePanel = new Panel()
             {
-                Location = new Point(_PADDING, _PADDING),
-                BackColor = Color.FromArgb(188, 174, 159)
+                Location = new Point(width - scorePanelWidth - _PADDING, _PADDING),
+                BackColor = Color.FromArgb(188, 174, 159),
+                Width = scorePanelWidth,
+                Height = scorePanelHeight
             };
+
+
+
+
+
+            // test
+            System.Drawing.Drawing2D.GraphicsPath buttonPath =
+                new System.Drawing.Drawing2D.GraphicsPath();
+
+            System.Drawing.Rectangle newRectangle = scorePanel.ClientRectangle;
+
+            newRectangle.Inflate(-10, -10);
+
+            //e.Graphics.DrawEllipse(System.Drawing.Pens.Black, newRectangle);
+
+            newRectangle.Inflate(1, 1);
+
+            buttonPath.AddEllipse(newRectangle);
+
+            scorePanel.Region = new System.Drawing.Region(buttonPath);
+
+
             _ScoreLabel = new Label()
             {
                 Text = String.Format("{0}", _Score),
-                Font = new Font("Arial", 28, FontStyle.Bold),
+                Font = new Font("Arial", 20, FontStyle.Bold),
                 Width = scorePanel.Size.Width,
                 Height = scorePanel.Size.Height / 2,
-                Location = new Point(0, scorePanel.Size.Height / 2)
+                Location = new Point(0, scorePanel.Size.Height / 2),
+                ForeColor = Color.FromArgb(255, 246, 230),
+                TextAlign = ContentAlignment.MiddleCenter
             };
             scorePanel.Controls.Add(new Label()
             {
                 Text = "Счет",
-                Font = new Font("Arial", 28, FontStyle.Bold),
+                Font = new Font("Arial", 16, FontStyle.Bold),
                 Width = scorePanel.Size.Width,
                 Height = scorePanel.Size.Height / 2,
                 Location = new Point(0, 0),
-                Padding = new Padding(0)
+                Padding = new Padding(0),
+                ForeColor = Color.FromArgb(100, Color.FromArgb(255, 246, 230)),
+                TextAlign = ContentAlignment.MiddleCenter
             });
             scorePanel.Controls.Add(_ScoreLabel);
             scorePanel.Show();
@@ -251,7 +283,7 @@ namespace Game2048
                         Width = _CELL_SIZE,
                         Height = _CELL_SIZE,
                         Location = new Point(xCell, yCell),
-                        Font = new Font("Arial", 20, FontStyle.Bold),
+                        Font = new Font("Arial", 28, FontStyle.Bold),
                         TextAlign = ContentAlignment.MiddleCenter
                     };
                     cellsPanel.Controls.Add(_Cells[i, j]);
@@ -341,7 +373,7 @@ namespace Game2048
 
         private Label _ScoreLabel;
 
-        private int _Score = 0;
+        private int _Score;
 
         private int _BestScore;
     }
