@@ -13,6 +13,15 @@ namespace Game2048
             this.KeyDown += new KeyEventHandler(Form_KeyDown);
         }
 
+        /// <summary>
+        /// Перемещает элементы внутри матрицы <c>_Field</c>.
+        /// </summary>
+        /// <returns><c>true</c>, если хоть одно значение внутри матрицы <c>_Field</c> переместилось, <c>false</c> иначе.</returns>
+        /// <param name="from1">Начальный индекс внешнего цикла.</param>
+        /// <param name="to1">Конечный индекс внешнего цикла.</param>
+        /// <param name="from2">Начальный индекс внутреннего цикла.</param>
+        /// <param name="to2">Конечный индекс внутреннего цикла.</param>
+        /// <param name="isVertical"><c>true</c>, если перемещение должно быть по вертикали.</param>
         private bool MoveValues(int from1, int to1, int from2, int to2, bool isVertical)
         {
             bool isMove = false;
@@ -20,12 +29,12 @@ namespace Game2048
 
             for (
                 int j = from1;
-                (from1 < to1) ? j < to1 : j >= to1;
+                (from1 < to1) ? j <= to1 : j >= to1;
                 j = from1 < to1 ? j + 1 : j - 1)
             {
                 for (
                     int i = from2, lastValue = -1;
-                    (from2 < to2) ? i < to2 : i >= to2;
+                    (from2 < to2) ? i <= to2 : i >= to2;
                     i = from2 < to2 ? i + 1 : i - 1)
                 {
                     int irow = isVertical ? i : j;
@@ -46,7 +55,7 @@ namespace Game2048
 
                 for (
                     int i = from2;
-                    (from2 < to2) ? i < to2 : i >= to2;
+                    (from2 < to2) ? i <= to2 : i >= to2;
                     i = (from2 < to2) ? i + 1 : i - 1)
                 {
                     int irow = isVertical ? i : j;
@@ -64,6 +73,9 @@ namespace Game2048
             return isMove;
         }
 
+        /// <summary>
+        /// Метод изменяет внутреннее состояние приложения исходя из направления хода пользователя.
+        /// </summary>
         private void ChangeStateByDirection(EDirection direction)
         {
             bool isMove = false;
@@ -71,16 +83,16 @@ namespace Game2048
             switch (direction)
             {
                 case EDirection.UP:
-                    isMove = MoveValues(0, _Field.GetLength(1), 0, _Field.GetLength(0), true);
+                    isMove = MoveValues(0, _Field.GetUpperBound(1), 0, _Field.GetUpperBound(0), true);
                     break;
                 case EDirection.RIGHT:
-                    isMove = MoveValues(0, _Field.GetLength(0), _Field.GetUpperBound(1), 0, false);
+                    isMove = MoveValues(0, _Field.GetUpperBound(0), _Field.GetUpperBound(1), 0, false);
                     break;
                 case EDirection.DOWN:
-                    isMove = MoveValues(0, _Field.GetLength(1), _Field.GetUpperBound(0), 0, true);
+                    isMove = MoveValues(0, _Field.GetUpperBound(1), _Field.GetUpperBound(0), 0, true);
                     break;
                 case EDirection.LEFT:
-                    isMove = MoveValues(0, _Field.GetLength(0), 0, _Field.GetLength(1), false);
+                    isMove = MoveValues(0, _Field.GetUpperBound(0), 0, _Field.GetUpperBound(1), false);
                     break;
             }
 
@@ -88,10 +100,13 @@ namespace Game2048
             {
                 AddRandomItem();
             }
-            UpdateState();
+            UpdateField();
         }
 
-        private void UpdateState()
+        /// <summary>
+        /// Метод обновляет интерфейс поля в зависимости от массива _Field.
+        /// </summary>
+        private void UpdateField()
         {
             for (int i = 0; i < _Field.GetLength(0); i++)
             {
@@ -104,23 +119,36 @@ namespace Game2048
             }
         }
 
+        /// <summary>
+        /// Получает значение следующей степени по основанию два.
+        /// </summary>
+        /// <returns>Значение 2^(n + 1).</returns>
+        /// <param name="value">Значение 2^n.</param>
         private int GetNextValue(int value)
         {
             int i;
             for (i = -1; value != 0; i++)
+            {
                 value >>= 1;
-            int log2 =  (i == -1) ? 0 : i;
+            }
+            int log2 = (i == -1) ? 0 : i;
 
             return (int)Math.Pow(2, log2 + 1);
         }
 
+        /// <summary>
+        /// Добавляет в cлучайную свободную ячейку матрицы <c>_Field</c> новое значение.
+        /// </summary>
+        /// <remarks>
+        /// С вероятностью 90% новое значение – 2.
+        /// С вероятностью 10% новое значение – 4.
+        /// </remarks>
         private void AddRandomItem()
         {
             Random rnd = new Random();
-            // 2 появляется с вероятностью 90%, 4 с вероятностью 10%
             int value = (rnd.Next(1, 10) == 10) ? 4 : 2;
-
             List<Point> emptyCells = new List<Point>();
+
             for (int i = 0; i < _Field.GetLength(0); i++)
             {
                 for (int j = 0; j < _Field.GetLength(1); j++)
@@ -136,6 +164,11 @@ namespace Game2048
             _Field[randomCoord.Y, randomCoord.X] = value;
         }
 
+        /// <summary>
+        /// Обработчик события загрузки формы.
+        /// </summary>
+        /// <param name="sender">Объект.</param>
+        /// <param name="e">Класс события.</param>
         private void MainScreen_Load(object sender, EventArgs e)
         {
             int fieldSize = _CELL_SIZE * _FIELD_SIZE + _CELL_MARGIN * (_FIELD_SIZE + 1);
@@ -144,6 +177,7 @@ namespace Game2048
             int x = Screen.PrimaryScreen.Bounds.Width / 2 - width / 2;
             int y = Screen.PrimaryScreen.Bounds.Height / 2 - height / 2;
 
+            // Инициализация формы
             Name = "2048";
             Text = "2048";
             MaximizeBox = false;
@@ -151,7 +185,7 @@ namespace Game2048
             Location = new Point(x, y);
             BackColor = _BACK_COLOR;
 
-            // _Score
+            // Инициализация счета
             Panel scorePanel = new Panel()
             {
                 Location = new Point(_PADDING, _PADDING),
@@ -178,11 +212,11 @@ namespace Game2048
             scorePanel.Show();
             this.Controls.Add(scorePanel);
 
-            // _Fields
+            // Инициализация матрицы _Field
             _Field = new int[_FIELD_SIZE, _FIELD_SIZE];
             _Field.Initialize();
 
-            // _Cells
+            // Инициализация игрового поля
             Panel cellsPanel = new Panel()
             {
                 Location = new Point(_PADDING, _PADDING * 2 + scorePanel.Size.Height),
@@ -213,7 +247,7 @@ namespace Game2048
 
             this.Controls.Add(cellsPanel);
 
-            // _CellBackColors
+            // Инициализация словаря с цветами ячеек игрового поля
             _CellBackColors.Add(0,    new CellColor(Color.FromArgb(121, 112, 99),  Color.FromArgb(216, 206, 196)));
             _CellBackColors.Add(2,    new CellColor(Color.FromArgb(121, 112, 99),  Color.FromArgb(240, 228, 217)));
             _CellBackColors.Add(4,    new CellColor(Color.FromArgb(121, 112, 99), Color.FromArgb(238, 225, 199)));
@@ -228,9 +262,14 @@ namespace Game2048
             _CellBackColors.Add(2048, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(243, 197, 0)));
 
             AddRandomItem();
-            UpdateState();
+            UpdateField();
         }
 
+        /// <summary>
+        /// Обработчик события нажатия на клавишу.
+        /// </summary>
+        /// <param name="sender">Объект.</param>
+        /// <param name="e">Класс события.</param>
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
