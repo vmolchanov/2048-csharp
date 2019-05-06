@@ -97,8 +97,9 @@ namespace Game2048
             {
                 for (int j = 0; j < _Field.GetLength(1); j++)
                 {
-                    _Cells[i, j].Text = String.Format("{0}", _Field[i, j]);
-                    _Cells[i, j].BackColor = _CellBackColors[_Field[i, j]];
+                    _Cells[i, j].Text = (_Field[i, j] == 0) ? "" : String.Format("{0}", _Field[i, j]);
+                    _Cells[i, j].BackColor = _CellBackColors[_Field[i, j]].Background;
+                    _Cells[i, j].ForeColor = _CellBackColors[_Field[i, j]].Foreground;
                 }
             }
         }
@@ -203,6 +204,7 @@ namespace Game2048
                         Width = _CELL_SIZE,
                         Height = _CELL_SIZE,
                         Location = new Point(xCell, yCell),
+                        Font = new Font("Arial", 20, FontStyle.Bold),
                         TextAlign = ContentAlignment.MiddleCenter
                     };
                     cellsPanel.Controls.Add(_Cells[i, j]);
@@ -212,18 +214,18 @@ namespace Game2048
             this.Controls.Add(cellsPanel);
 
             // _CellBackColors
-            _CellBackColors.Add(0, Color.FromArgb(216, 206, 196));
-            _CellBackColors.Add(2, Color.FromArgb(240, 228, 217));
-            _CellBackColors.Add(4, Color.FromArgb(238, 225, 199));
-            _CellBackColors.Add(8, Color.FromArgb(253, 175, 112));
-            _CellBackColors.Add(16, Color.FromArgb(255, 143, 86));
-            _CellBackColors.Add(32, Color.FromArgb(255, 112, 80));
-            _CellBackColors.Add(64, Color.FromArgb(255, 70, 18));
-            _CellBackColors.Add(128, Color.FromArgb(241, 210, 104));
-            _CellBackColors.Add(256, Color.FromArgb(241, 208, 86));
-            _CellBackColors.Add(512, Color.FromArgb(240, 203, 65));
-            _CellBackColors.Add(1024, Color.FromArgb(242, 201, 39));
-            _CellBackColors.Add(2048, Color.FromArgb(243, 197, 0));
+            _CellBackColors.Add(0,    new CellColor(Color.FromArgb(121, 112, 99),  Color.FromArgb(216, 206, 196)));
+            _CellBackColors.Add(2,    new CellColor(Color.FromArgb(121, 112, 99),  Color.FromArgb(240, 228, 217)));
+            _CellBackColors.Add(4,    new CellColor(Color.FromArgb(121, 112, 99), Color.FromArgb(238, 225, 199)));
+            _CellBackColors.Add(8,    new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(253, 175, 112)));
+            _CellBackColors.Add(16,   new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(255, 143, 86)));
+            _CellBackColors.Add(32,   new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(255, 112, 80)));
+            _CellBackColors.Add(64,   new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(255, 70,  18)));
+            _CellBackColors.Add(128,  new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(241, 210, 104)));
+            _CellBackColors.Add(256,  new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(241, 208, 86)));
+            _CellBackColors.Add(512,  new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(240, 203, 65)));
+            _CellBackColors.Add(1024, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(242, 201, 39)));
+            _CellBackColors.Add(2048, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(243, 197, 0)));
 
             AddRandomItem();
             UpdateState();
@@ -256,6 +258,19 @@ namespace Game2048
             LEFT
         }
 
+        private struct CellColor
+        {
+            public CellColor(Color foreground, Color background)
+            {
+                Foreground = foreground;
+                Background = background;
+            }
+
+            public Color Foreground;
+
+            public Color Background;
+        }
+
         private readonly Color _BACK_COLOR = Color.FromArgb(251, 249, 239);
 
         private const int _FIELD_SIZE = 4;
@@ -266,7 +281,7 @@ namespace Game2048
 
         private const int _CELL_MARGIN = 10;
 
-        private Dictionary<int, Color> _CellBackColors = new Dictionary<int, Color>();
+        private Dictionary<int, CellColor> _CellBackColors = new Dictionary<int, CellColor>();
 
         private Label[,] _Cells;
 
