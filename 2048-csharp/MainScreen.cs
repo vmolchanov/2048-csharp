@@ -22,7 +22,7 @@ namespace Game2048
         /// <param name="from2">Начальный индекс внутреннего цикла.</param>
         /// <param name="to2">Конечный индекс внутреннего цикла.</param>
         /// <param name="isVertical"><c>true</c>, если перемещение должно быть по вертикали.</param>
-        private bool MoveValues(int from1, int to1, int from2, int to2, bool isVertical)
+        private bool MoveValues(int from1, int to1, int from2, int to2, bool isVertical, ref int[,] field)
         {
             bool isMove = false;
             Stack<int> stack = new Stack<int>();
@@ -40,7 +40,7 @@ namespace Game2048
                     int irow = isVertical ? i : j;
                     int icolumn = isVertical ? j : i;
 
-                    int value = _Field[irow, icolumn];
+                    int value = field[irow, icolumn];
 
                     if (value != 0)
                     {
@@ -72,12 +72,12 @@ namespace Game2048
                     int irow = isVertical ? i : j;
                     int icolumn = isVertical ? j : i;
 
-                    if (stack.Count != 0 && stack.Peek() != _Field[irow, icolumn])
+                    if (stack.Count != 0 && stack.Peek() != field[irow, icolumn])
                     {
                         isMove = true;
                     }
 
-                    _Field[irow, icolumn] = (stack.Count != 0) ? stack.Pop() : 0;
+                    field[irow, icolumn] = (stack.Count != 0) ? stack.Pop() : 0;
                 }
             }
 
@@ -87,31 +87,27 @@ namespace Game2048
         /// <summary>
         /// Метод изменяет внутреннее состояние приложения исходя из направления хода пользователя.
         /// </summary>
-        private void ChangeStateByDirection(EDirection direction)
+        private bool ChangeStateByDirection(EDirection direction, ref int[,] field)
         {
             bool isMove = false;
 
             switch (direction)
             {
                 case EDirection.UP:
-                    isMove = MoveValues(0, _Field.GetUpperBound(1), 0, _Field.GetUpperBound(0), true);
+                    isMove = MoveValues(0, _Field.GetUpperBound(1), 0, _Field.GetUpperBound(0), true, ref field);
                     break;
                 case EDirection.RIGHT:
-                    isMove = MoveValues(0, _Field.GetUpperBound(0), _Field.GetUpperBound(1), 0, false);
+                    isMove = MoveValues(0, _Field.GetUpperBound(0), _Field.GetUpperBound(1), 0, false, ref field);
                     break;
                 case EDirection.DOWN:
-                    isMove = MoveValues(0, _Field.GetUpperBound(1), _Field.GetUpperBound(0), 0, true);
+                    isMove = MoveValues(0, _Field.GetUpperBound(1), _Field.GetUpperBound(0), 0, true, ref field);
                     break;
                 case EDirection.LEFT:
-                    isMove = MoveValues(0, _Field.GetUpperBound(0), 0, _Field.GetUpperBound(1), false);
+                    isMove = MoveValues(0, _Field.GetUpperBound(0), 0, _Field.GetUpperBound(1), false, ref field);
                     break;
             }
 
-            if (isMove)
-            {
-                AddRandomItem();
-            }
-            UpdateField();
+            return isMove;
         }
 
         /// <summary>
@@ -177,6 +173,18 @@ namespace Game2048
             _Field[randomCoord.Y, randomCoord.X] = value;
         }
 
+        private bool isGameOver()
+        {
+            int[,] fieldClone = (int[,])_Field.Clone();
+
+            return !(
+                ChangeStateByDirection(EDirection.UP, ref fieldClone) ||
+                ChangeStateByDirection(EDirection.RIGHT, ref fieldClone) ||
+                ChangeStateByDirection(EDirection.DOWN, ref fieldClone) ||
+                ChangeStateByDirection(EDirection.LEFT, ref fieldClone)
+            );
+        }
+
         /// <summary>
         /// Обработчик события загрузки формы.
         /// </summary>
@@ -210,28 +218,6 @@ namespace Game2048
                 Width = scorePanelWidth,
                 Height = scorePanelHeight
             };
-
-
-
-
-
-            // test
-            System.Drawing.Drawing2D.GraphicsPath buttonPath =
-                new System.Drawing.Drawing2D.GraphicsPath();
-
-            System.Drawing.Rectangle newRectangle = scorePanel.ClientRectangle;
-
-            newRectangle.Inflate(-10, -10);
-
-            //e.Graphics.DrawEllipse(System.Drawing.Pens.Black, newRectangle);
-
-            newRectangle.Inflate(1, 1);
-
-            buttonPath.AddEllipse(newRectangle);
-
-            scorePanel.Region = new System.Drawing.Region(buttonPath);
-
-
             _ScoreLabel = new Label()
             {
                 Text = String.Format("{0}", _Score),
@@ -254,7 +240,6 @@ namespace Game2048
                 TextAlign = ContentAlignment.MiddleCenter
             });
             scorePanel.Controls.Add(_ScoreLabel);
-            scorePanel.Show();
             this.Controls.Add(scorePanel);
 
             // Инициализация матрицы _Field
@@ -289,7 +274,6 @@ namespace Game2048
                     cellsPanel.Controls.Add(_Cells[i, j]);
                 }
             }
-
             this.Controls.Add(cellsPanel);
 
             // Инициализация словаря с цветами ячеек игрового поля
@@ -317,21 +301,47 @@ namespace Game2048
         /// <param name="e">Класс события.</param>
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
+            bool isMove = false;
+
             switch (e.KeyCode)
             {
                 case Keys.Up:
-                    ChangeStateByDirection(EDirection.UP);
+                    isMove = ChangeStateByDirection(EDirection.UP, ref _Field);
                     break;
                 case Keys.Right:
-                    ChangeStateByDirection(EDirection.RIGHT);
+                    isMove = ChangeStateByDirection(EDirection.RIGHT, ref _Field);
                     break;
                 case Keys.Down:
-                    ChangeStateByDirection(EDirection.DOWN);
+                    isMove = ChangeStateByDirection(EDirection.DOWN, ref _Field);
                     break;
                 case Keys.Left:
-                    ChangeStateByDirection(EDirection.LEFT);
+                    isMove = ChangeStateByDirection(EDirection.LEFT, ref _Field);
                     break;
             }
+
+            if (isMove)
+            {
+                AddRandomItem();
+            }
+            UpdateField();
+            if (isGameOver())
+            {
+                MessageBox.Show("Вы проиграли!");
+                ResetState();
+            }
+        }
+
+        private void ResetState()
+        {
+            _Score = 0;
+            for (int i = 0; i < _Field.GetLength(0); i++)
+            {
+                for (int j = 0; j < _Field.GetLength(1); j++)
+                {
+                    _Field[i, j] = 0;
+                }
+            }
+            UpdateField();
         }
 
         private enum EDirection
