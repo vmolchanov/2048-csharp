@@ -6,11 +6,11 @@ namespace Game2048
 {
     class Score : Panel
     {
-        public Score(string title, int initialValue = 0) : base()
+        public Score(string title, int initialValue = 0)
         {
             BackColor = Color.FromArgb(188, 174, 159);
-            Width = _Width;
-            Height = _Height;
+            Width = _WIDTH;
+            Height = _HEIGHT;
 
             _Value = initialValue;
 
@@ -18,8 +18,7 @@ namespace Game2048
             {
                 Text = title,
                 Font = new Font("Arial", 16, FontStyle.Bold),
-                Width = _Width,
-                Height = _Height / 2,
+                Size = new Size(_WIDTH, _HEIGHT / 2),
                 Location = new Point(0, 0),
                 ForeColor = Color.FromArgb(100, Color.FromArgb(255, 246, 230)),
                 TextAlign = ContentAlignment.MiddleCenter
@@ -29,9 +28,8 @@ namespace Game2048
             {
                 Text = String.Format("{0}", _Value),
                 Font = new Font("Arial", 20, FontStyle.Bold),
-                Width = _Width,
-                Height = _Height / 2,
-                Location = new Point(0, _Height / 2),
+                Size = new Size(_WIDTH, _HEIGHT / 2),
+                Location = new Point(0, _HEIGHT / 2),
                 ForeColor = Color.FromArgb(255, 246, 230),
                 TextAlign = ContentAlignment.MiddleCenter
             };
@@ -56,16 +54,6 @@ namespace Game2048
             this.SetValue(0);
         }
 
-        private const int _Width = 95;
-
-        private const int _Height = 70;
-
-        private Label _TitleLabel;
-
-        private Label _ValueLabel;
-
-        private int _Value;
-
         public int Value
         {
             get
@@ -73,5 +61,15 @@ namespace Game2048
                 return _Value;
             }
         }
+
+        private const int _WIDTH = 95;
+
+        private const int _HEIGHT = 70;
+
+        private Label _TitleLabel;
+
+        private Label _ValueLabel;
+
+        private int _Value;
     }
 }

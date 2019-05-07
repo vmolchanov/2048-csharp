@@ -131,8 +131,7 @@ namespace Game2048
                 for (int j = 0; j < _Field.GetLength(1); j++)
                 {
                     _Cells[i, j].Text = (_Field[i, j] == 0) ? "" : String.Format("{0}", _Field[i, j]);
-                    _Cells[i, j].BackColor = _CellBackColors[_Field[i, j]].Background;
-                    _Cells[i, j].ForeColor = _CellBackColors[_Field[i, j]].Foreground;
+                    _Cells[i, j].Style = _CellBackColors[_Field[i, j]];
                 }
             }
         }
@@ -203,10 +202,10 @@ namespace Game2048
         /// <param name="e">Класс события.</param>
         private void MainScreen_Load(object sender, EventArgs e)
         {
-            int fieldSize = _CELL_SIZE * _FIELD_SIZE + _CELL_MARGIN * (_FIELD_SIZE + 1);
+            int fieldSize = Cell.SIZE * _FIELD_SIZE + Cell.MARGIN * (_FIELD_SIZE + 1);
 
             int scorePanelHeight = 70;
-            int scorePanelWidth = _CELL_SIZE - 5;
+            int scorePanelWidth = Cell.SIZE - 5;
 
             int width = fieldSize + _PADDING * 2;
             int height = fieldSize + _PADDING * 3 + scorePanelHeight;
@@ -256,22 +255,14 @@ namespace Game2048
                 BackColor = Color.FromArgb(188, 174, 159)
             };
 
-            _Cells = new Label[_FIELD_SIZE, _FIELD_SIZE];
+            _Cells = new Cell[_FIELD_SIZE, _FIELD_SIZE];
             for (int i = 0; i < _Cells.GetLength(0); i++)
             {
                 for (int j = 0; j < _Cells.GetLength(1); j++)
                 {
-                    int xCell = j * _CELL_SIZE + (j + 1) * _CELL_MARGIN;
-                    int yCell = i * _CELL_SIZE + (i + 1) * _CELL_MARGIN;
-
-                    _Cells[i, j] = new Label()
-                    {
-                        Width = _CELL_SIZE,
-                        Height = _CELL_SIZE,
-                        Location = new Point(xCell, yCell),
-                        Font = new Font("Arial", 28, FontStyle.Bold),
-                        TextAlign = ContentAlignment.MiddleCenter
-                    };
+                    int xCell = j * Cell.SIZE + (j + 1) * Cell.MARGIN;
+                    int yCell = i * Cell.SIZE + (i + 1) * Cell.MARGIN;
+                    _Cells[i, j] = new Cell(xCell, yCell);
                     cellsPanel.Controls.Add(_Cells[i, j]);
                 }
             }
@@ -362,34 +353,17 @@ namespace Game2048
             LEFT
         }
 
-        private struct CellColor
-        {
-            public CellColor(Color foreground, Color background)
-            {
-                Foreground = foreground;
-                Background = background;
-            }
-
-            public Color Foreground;
-
-            public Color Background;
-        }
-
         private readonly Storage _Storage = new Storage();
 
         private readonly Color _BACK_COLOR = Color.FromArgb(251, 249, 239);
 
         private const int _FIELD_SIZE = 4;
 
-        private const int _CELL_SIZE = 100;
-
         private const int _PADDING = 25;
-
-        private const int _CELL_MARGIN = 10;
 
         private Dictionary<int, CellColor> _CellBackColors = new Dictionary<int, CellColor>();
 
-        private Label[,] _Cells;
+        private Cell[,] _Cells;
 
         private int[,] _Field;
 

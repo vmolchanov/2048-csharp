@@ -37,6 +37,8 @@
     <Compile Include="MainScreen.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="Score.cs" />
+    <Compile Include="Cell.cs" />
+    <Compile Include="CellColor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
