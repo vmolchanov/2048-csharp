@@ -15,11 +15,17 @@ namespace Game2048
             );
         }
 
+        /// <summary>
+        /// Получает лучший счет из стора приложения.
+        /// </summary>
+        /// <returns>
+        /// Возвращает лучший счет из стора приложения. Если счет получить из стора не удалось, то возвращает 0.
+        /// </returns>
         public int ReadBestScore()
         {
             int score;
-
             StreamReader sr = null;
+
             try
             {
                 sr = new StreamReader(new IsolatedStorageFileStream("Data\\bestScore.txt", FileMode.Open, _Storage));
@@ -34,6 +40,10 @@ namespace Game2048
             return score;
         }
 
+        /// <summary>
+        /// Записывает значение лучшего счета в стор.
+        /// </summary>
+        /// <param name="score">Значение лучшего счета.</param>
         public void WriteBestScore(int score)
         {
             _Storage.CreateDirectory("Data");

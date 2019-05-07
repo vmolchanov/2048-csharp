@@ -12,7 +12,6 @@ namespace Game2048
             this.KeyDown += new KeyEventHandler(Form_KeyDown);
         }
 
-
         /// <summary>
         /// Обработчик события загрузки формы.
         /// </summary>
@@ -115,6 +114,9 @@ namespace Game2048
             }
         }
 
+        /// <summary>
+        /// Сбрасывает компоненты игры.
+        /// </summary>
         private void ResetState()
         {
             _CurrentScore.Reset();

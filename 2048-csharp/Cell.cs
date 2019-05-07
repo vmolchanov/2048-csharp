@@ -13,6 +13,10 @@ namespace Game2048
             TextAlign = ContentAlignment.MiddleCenter;
         }
 
+        /// <summary>
+        /// Устанавливает цвета для ячейки.
+        /// </summary>
+        /// <value>Струкрура, содержащая цвет текста и цвет фона.</value>
         public CellColor Style
         {
             set

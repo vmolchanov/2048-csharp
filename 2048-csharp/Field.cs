@@ -43,6 +43,9 @@ namespace Game2048
             };
         }
 
+        /// <summary>
+        /// Обновляет графический интерфейс поля в соответствии с состоянием _Field.
+        /// </summary>
         public void UpdateUI()
         {
             for (int i = 0; i < _Field.GetLength(0); i++)
@@ -55,6 +58,9 @@ namespace Game2048
             }
         }
 
+        /// <summary>
+        /// Приводит состояние игры к изначальному.
+        /// </summary>
         public void Reset()
         {
             for (int i = 0; i < _Field.GetLength(0); i++)
@@ -67,6 +73,13 @@ namespace Game2048
             UpdateUI();
         }
 
+        /// <summary>
+        /// Добавляет в cлучайную свободную ячейку матрицы <c>_Field</c> новое значение.
+        /// </summary>
+        /// <remarks>
+        /// С вероятностью 90% новое значение – 2.
+        /// С вероятностью 10% новое значение – 4.
+        /// </remarks>
         public void AddRandomItem()
         {
             Random rnd = new Random();
@@ -88,11 +101,23 @@ namespace Game2048
             _Field[randomCoord.Y, randomCoord.X] = value;
         }
 
+        /// <summary>
+        /// Обертка над внутренним методом <c>ChangeStateByDirection</c> для произведения хода в указанном направлении.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c>, если хоть одно значение внутри матрицы <c>_Field</c> переместилось, <c>false</c> иначе.
+        /// </returns>
+        /// <param name="direction">Направление.</param>
+        /// <param name="score">Счет.</param>
         public bool ChangeByDirection(EDirection direction, out int score)
         {
             return ChangeStateByDirection(direction, ref _Field, out score);
         }
 
+        /// <summary>
+        /// Проверяет, возможно ли произвести ход в любом из направлений.
+        /// </summary>
+        /// <returns><c>true</c>, если ход произвести нельзя, <c>false</c> иначе.</returns>
         public bool isGameOver()
         {
             int[,] fieldClone = (int[,])_Field.Clone();
@@ -107,6 +132,13 @@ namespace Game2048
             );
         }
 
+        /// <summary>
+        /// Изменяет состояние поля.
+        /// </summary>
+        /// <returns><c>true</c>, хотя бы одна ячейка переместилась, <c>false</c> иначе.</returns>
+        /// <param name="direction">Направление.</param>
+        /// <param name="field">Состояние поля.</param>
+        /// <param name="score">Счет.</param>
         private bool ChangeStateByDirection(EDirection direction, ref int[,] field, out int score)
         {
             bool isMove = false;
@@ -135,6 +167,19 @@ namespace Game2048
             return isMove;
         }
 
+        /// <summary>
+        /// Перемещает элементы внутри состояния.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c>, если хоть одно значение внутри матрицы <c>_Field</c> переместилось, <c>false</c> иначе.
+        /// </returns>
+        /// <param name="from1">Начальный индекс внешнего цикла.</param>
+        /// <param name="to1">Конечный индекс внешнего цикла.</param>
+        /// <param name="from2">Начальный индекс внутреннего цикла.</param>
+        /// <param name="to2">Конечный индекс внутреннего цикла.</param>
+        /// <param name="isVertical"><c>true</c>, если перемещение должно быть по вертикали.</param>
+        /// <param name="field">Состояние.</param>
+        /// <param name="score">Счет.</param>
         private bool MoveValues(
             int from1,
             int to1,
@@ -205,6 +250,11 @@ namespace Game2048
             return isMove;
         }
 
+        /// <summary>
+        /// Получает значение следующей степени по основанию два.
+        /// </summary>
+        /// <returns>Значение 2^(n + 1).</returns>
+        /// <param name="value">Значение 2^n.</param>
         private int GetNextValue(int value)
         {
             int i;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace Game2048
@@ -38,17 +37,28 @@ namespace Game2048
             Controls.Add(_ValueLabel);
         }
 
+        /// <summary>
+        /// Устанавливает счет.
+        /// </summary>
+        /// <param name="value">Значение счета.</param>
         public void SetValue(int value)
         {
             _Value = value;
             _ValueLabel.Text = $"{_Value}";
         }
 
+        /// <summary>
+        /// Увеличивает счет на переданное значение.
+        /// </summary>
+        /// <param name="value">Значение, на которое нужно увеличить счет.</param>
         public void Increase(int value)
         {
             SetValue(_Value + value);
         }
 
+        /// <summary>
+        /// Сбрасывает счет.
+        /// </summary>
         public void Reset()
         {
             SetValue(0);
