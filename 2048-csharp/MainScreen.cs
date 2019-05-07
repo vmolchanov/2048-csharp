@@ -21,11 +21,10 @@ namespace Game2048
         {
             int fieldSize = Cell.SizeValue * Field.Dimension + Cell.MarginValue * (Field.Dimension + 1);
 
-            int scorePanelHeight = 70;
-            int scorePanelWidth = Cell.SizeValue - 5;
+            int headerHeight = 70;
 
             int width = fieldSize + _PADDING * 2;
-            int height = fieldSize + _PADDING * 3 + scorePanelHeight;
+            int height = fieldSize + _PADDING * 3 + headerHeight;
             int x = Screen.PrimaryScreen.Bounds.Width / 2 - width / 2;
             int y = Screen.PrimaryScreen.Bounds.Height / 2 - height / 2;
 
@@ -40,17 +39,17 @@ namespace Game2048
             {
                 Location = new Point(_PADDING, _PADDING),
                 Width = width - _PADDING * 2,
-                Height = scorePanelHeight
+                Height = headerHeight
             };
 
             _BestScore = new Score("Рекорд", _Storage.ReadBestScore())
             {
-                Location = new Point(header.Width - scorePanelWidth, 0)
+                Location = new Point(header.Width - Score.WidthValue, 0)
             };
 
             _CurrentScore = new Score("Счет")
             {
-                Location = new Point(header.Width - scorePanelWidth * 2 - _PADDING, 0)
+                Location = new Point(header.Width - Score.WidthValue * 2 - _PADDING, 0)
             };
 
             header.Controls.Add(_BestScore);

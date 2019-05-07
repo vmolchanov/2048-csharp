@@ -8,8 +8,8 @@ namespace Game2048
         public Score(string title, int initialValue = 0)
         {
             BackColor = Color.FromArgb(188, 174, 159);
-            Width = _WIDTH;
-            Height = _HEIGHT;
+            Width = WidthValue;
+            Height = HeightValue;
 
             _Value = initialValue;
 
@@ -17,7 +17,7 @@ namespace Game2048
             {
                 Text = title,
                 Font = new Font("Arial", 16, FontStyle.Bold),
-                Size = new Size(_WIDTH, _HEIGHT / 2),
+                Size = new Size(WidthValue, HeightValue / 2),
                 Location = new Point(0, 0),
                 ForeColor = Color.FromArgb(100, Color.FromArgb(255, 246, 230)),
                 TextAlign = ContentAlignment.MiddleCenter
@@ -27,8 +27,8 @@ namespace Game2048
             {
                 Text = $"{_Value}",
                 Font = new Font("Arial", 20, FontStyle.Bold),
-                Size = new Size(_WIDTH, _HEIGHT / 2),
-                Location = new Point(0, _HEIGHT / 2),
+                Size = new Size(WidthValue, HeightValue / 2),
+                Location = new Point(0, HeightValue / 2),
                 ForeColor = Color.FromArgb(255, 246, 230),
                 TextAlign = ContentAlignment.MiddleCenter
             };
@@ -72,9 +72,9 @@ namespace Game2048
             }
         }
 
-        private const int _WIDTH = 95;
+        public readonly static int WidthValue = 95;
 
-        private const int _HEIGHT = 70;
+        public readonly static int HeightValue = 70;
 
         private Label _TitleLabel;
 

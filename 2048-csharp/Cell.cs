@@ -9,7 +9,7 @@ namespace Game2048
         {
             Size = new Size(SizeValue, SizeValue);
             Location = new Point(x, y);
-            Font = new Font("Arial", 28, FontStyle.Bold);
+            Font = new Font("Arial", 24, FontStyle.Bold);
             TextAlign = ContentAlignment.MiddleCenter;
         }
 
@@ -26,7 +26,7 @@ namespace Game2048
             }
         }
 
-        public readonly static int SizeValue = 100;
+        public readonly static int SizeValue = 110;
 
         public readonly static int MarginValue = 10;
     }

@@ -39,7 +39,13 @@ namespace Game2048
                 {256, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(241, 208, 86))},
                 {512, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(240, 203, 65))},
                 {1024, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(242, 201, 39))},
-                {2048, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(243, 197, 0))}
+                {2048, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(243, 197, 0))},
+                {4096, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(255, 80, 94))},
+                {8192, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(255, 34, 75))},
+                {16384, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(248, 19, 30))},
+                {32768, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(96, 178, 219))},
+                {65536, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(83, 154, 229))},
+                {131072, new CellColor(Color.FromArgb(255, 246, 230), Color.FromArgb(0, 118, 193))}
             };
         }
 
