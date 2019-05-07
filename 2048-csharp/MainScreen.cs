@@ -135,9 +135,6 @@ namespace Game2048
                     _Cells[i, j].ForeColor = _CellBackColors[_Field[i, j]].Foreground;
                 }
             }
-
-            _ScoreLabel.Text = String.Format("{0}", _Score);
-            _BestScoreLabel.Text = String.Format("{0}", _BestScore);
         }
 
         /// <summary>
@@ -206,8 +203,6 @@ namespace Game2048
         /// <param name="e">Класс события.</param>
         private void MainScreen_Load(object sender, EventArgs e)
         {
-            _BestScore = _Storage.ReadBestScore();
-
             int fieldSize = _CELL_SIZE * _FIELD_SIZE + _CELL_MARGIN * (_FIELD_SIZE + 1);
 
             int scorePanelHeight = 70;
@@ -234,68 +229,18 @@ namespace Game2048
                 Height = scorePanelHeight
             };
 
-            Panel bestScorePanel = new Panel()
+            _BestScore = new Score("Рекорд", _Storage.ReadBestScore())
             {
-                Location = new Point(scorePanel.Width - scorePanelWidth, 0),
-                BackColor = Color.FromArgb(188, 174, 159),
-                Width = scorePanelWidth,
-                Height = scorePanelHeight
+                Location = new Point(scorePanel.Width - scorePanelWidth, 0)
             };
-            _BestScoreLabel = new Label()
-            {
-                Text = String.Format("{0}", _BestScore),
-                Font = new Font("Arial", 20, FontStyle.Bold),
-                Width = bestScorePanel.Size.Width,
-                Height = bestScorePanel.Size.Height / 2,
-                Location = new Point(0, bestScorePanel.Size.Height / 2),
-                ForeColor = Color.FromArgb(255, 246, 230),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-            bestScorePanel.Controls.Add(new Label()
-            {
-                Text = "Рекорд",
-                Font = new Font("Arial", 16, FontStyle.Bold),
-                Width = bestScorePanel.Size.Width,
-                Height = bestScorePanel.Size.Height / 2,
-                Location = new Point(0, 0),
-                Padding = new Padding(0),
-                ForeColor = Color.FromArgb(100, Color.FromArgb(255, 246, 230)),
-                TextAlign = ContentAlignment.MiddleCenter
-            });
-            bestScorePanel.Controls.Add(_BestScoreLabel);
 
-            Panel currentScorePanel = new Panel()
+            _CurrentScore = new Score("Счет")
             {
-                Location = new Point(scorePanel.Width - scorePanelWidth * 2 - _PADDING, 0),
-                BackColor = Color.FromArgb(188, 174, 159),
-                Width = scorePanelWidth,
-                Height = scorePanelHeight
+                Location = new Point(scorePanel.Width - scorePanelWidth * 2 - _PADDING, 0)
             };
-            _ScoreLabel = new Label()
-            {
-                Text = String.Format("{0}", _Score),
-                Font = new Font("Arial", 20, FontStyle.Bold),
-                Width = currentScorePanel.Size.Width,
-                Height = currentScorePanel.Size.Height / 2,
-                Location = new Point(0, currentScorePanel.Size.Height / 2),
-                ForeColor = Color.FromArgb(255, 246, 230),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-            currentScorePanel.Controls.Add(new Label()
-            {
-                Text = "Счет",
-                Font = new Font("Arial", 16, FontStyle.Bold),
-                Width = currentScorePanel.Size.Width,
-                Height = currentScorePanel.Size.Height / 2,
-                Location = new Point(0, 0),
-                Padding = new Padding(0),
-                ForeColor = Color.FromArgb(100, Color.FromArgb(255, 246, 230)),
-                TextAlign = ContentAlignment.MiddleCenter
-            });
-            currentScorePanel.Controls.Add(_ScoreLabel);
 
-            scorePanel.Controls.Add(bestScorePanel);
-            scorePanel.Controls.Add(currentScorePanel);
+            scorePanel.Controls.Add(_BestScore);
+            scorePanel.Controls.Add(_CurrentScore);
             this.Controls.Add(scorePanel);
 
             // Инициализация матрицы _Field
@@ -376,12 +321,11 @@ namespace Game2048
                     break;
             }
 
-            _Score += score;
-            if (_Score > _BestScore)
+            _CurrentScore.Increase(score);
+            if (_CurrentScore.Value > _BestScore.Value)
             {
-                _BestScore = _Score;
-
-                _Storage.WriteBestScore(_BestScore);
+                _BestScore.SetValue(_CurrentScore.Value);
+                _Storage.WriteBestScore(_BestScore.Value);
             }
 
             if (isMove)
@@ -398,7 +342,7 @@ namespace Game2048
 
         private void ResetState()
         {
-            _Score = 0;
+            _CurrentScore.Reset();
             for (int i = 0; i < _Field.GetLength(0); i++)
             {
                 for (int j = 0; j < _Field.GetLength(1); j++)
@@ -449,12 +393,8 @@ namespace Game2048
 
         private int[,] _Field;
 
-        private Label _ScoreLabel;
+        private Score _CurrentScore;
 
-        private int _Score;
-
-        private Label _BestScoreLabel;
-
-        private int _BestScore;
+        private Score _BestScore;
     }
 }
