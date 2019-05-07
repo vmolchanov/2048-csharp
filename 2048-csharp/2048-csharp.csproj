@@ -39,6 +39,8 @@
     <Compile Include="Score.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="CellColor.cs" />
+    <Compile Include="Field.cs" />
+    <Compile Include="EDirection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

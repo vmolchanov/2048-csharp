@@ -26,7 +26,7 @@ namespace Game2048
 
             _ValueLabel = new Label()
             {
-                Text = String.Format("{0}", _Value),
+                Text = $"{_Value}",
                 Font = new Font("Arial", 20, FontStyle.Bold),
                 Size = new Size(_WIDTH, _HEIGHT / 2),
                 Location = new Point(0, _HEIGHT / 2),
@@ -34,24 +34,24 @@ namespace Game2048
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
-            this.Controls.Add(_TitleLabel);
-            this.Controls.Add(_ValueLabel);
+            Controls.Add(_TitleLabel);
+            Controls.Add(_ValueLabel);
         }
 
         public void SetValue(int value)
         {
             _Value = value;
-            _ValueLabel.Text = String.Format("{0}", _Value);
+            _ValueLabel.Text = $"{_Value}";
         }
 
         public void Increase(int value)
         {
-            this.SetValue(_Value + value);
+            SetValue(_Value + value);
         }
 
         public void Reset()
         {
-            this.SetValue(0);
+            SetValue(0);
         }
 
         public int Value

@@ -7,7 +7,7 @@ namespace Game2048
     {
         public Cell(int x, int y)
         {
-            Size = new Size(SIZE, SIZE);
+            Size = new Size(SizeValue, SizeValue);
             Location = new Point(x, y);
             Font = new Font("Arial", 28, FontStyle.Bold);
             TextAlign = ContentAlignment.MiddleCenter;
@@ -22,8 +22,8 @@ namespace Game2048
             }
         }
 
-        public readonly static int SIZE = 100;
+        public readonly static int SizeValue = 100;
 
-        public readonly static int MARGIN = 10;
+        public readonly static int MarginValue = 10;
     }
 }
